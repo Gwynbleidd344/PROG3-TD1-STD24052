@@ -6,5 +6,7 @@ CREATE TABLE Product (
 );
 CREATE TABLE Product_Category (
     id int PRIMARY KEY,
-    name varchar(50) NOT NULL
+    name varchar(50) NOT NULL,
+    product_id int,
+    FOREIGN KEY (product_id) references Product(id)
 )
