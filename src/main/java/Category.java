@@ -1,3 +1,5 @@
+import java.util.Objects;
+
 public class Category {
     private int id;
     private String name;

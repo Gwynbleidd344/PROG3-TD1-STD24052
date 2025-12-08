@@ -9,14 +9,13 @@ public class DBConnection {
     private final String PASSWORD = "2048";
 
     public Connection getDBConnection() {
-        Connection connection = null;
         try {
             connection = DriverManager.getConnection(JDBC_URL, USER, PASSWORD);
-            System.out.println("Connection to PostgreSQL established successfully.");
+            System.out.println("Connected to PostgreSQL");
+            return connection;
         } catch (SQLException e) {
-            System.err.println("Failed to establish connection to PostgreSQL.");
             e.printStackTrace();
+            return null;
         }
-        return connection;
     }
 }
