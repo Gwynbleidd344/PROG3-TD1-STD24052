@@ -9,4 +9,4 @@ CREATE TABLE Product_Category (
     name varchar(50) NOT NULL,
     product_id int,
     FOREIGN KEY (product_id) references Product(id)
-)
+);

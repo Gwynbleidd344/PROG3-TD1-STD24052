@@ -12,4 +12,5 @@ GRANT CONNECT ON DATABASE product_management_db TO product_manager_user;
 GRANT CREATE ON DATABASE product_management_db TO product_manager_user;
 
 -- Accorder le droit de faire le CRUD
-GRANT SELECT, INSERT, UPDATE, DELETE ON TABLES TO product_manager_user;
+GRANT SELECT, INSERT, UPDATE, DELETE ON Product TO product_manager_user;
+GRANT SELECT, INSERT, UPDATE, DELETE ON Product_Category TO product_manager_user;

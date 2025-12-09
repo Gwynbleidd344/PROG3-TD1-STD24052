@@ -26,8 +26,8 @@ public class DataRetriever {
         List<Product> products = new ArrayList<>();
         String query = " SELECT p.id AS product_id, p.name AS product_name, p.creation_datetime, c.id AS category_id, c.name AS category_name FROM Product p LEFT JOIN Product_Category c ON c.product_id = p.id ORDER BY p.id LIMIT ? OFFSET ?";
         PreparedStatement preparedStatement = connection.prepareStatement(query);
-        preparedStatement.setInt(1, page);
-        preparedStatement.setInt(2, size);
+        preparedStatement.setInt(1, size);
+        preparedStatement.setInt(2, page);
         ResultSet resultSet = preparedStatement.executeQuery();
         while (resultSet.next()) {
             Category category = new Category(resultSet.getInt("product_id"), resultSet.getString("product_name"));
@@ -47,19 +47,27 @@ public class DataRetriever {
     List<Product> getProductsByCriteria(String productName, String categoryName, Instant creationMin, Instant creationMax) throws SQLException {
         List<Product> products = new ArrayList<>();
         StringBuilder query = new StringBuilder("SELECT p.id AS product_id, p.name AS product_name, p.creation_datetime, c.id AS category_id, c.name AS category_name FROM Product p LEFT JOIN Product_Category c ON c.product_id = p.id WHERE 1=1");
+        List<Object> params = new ArrayList<>();
         if (productName != null) {
-            query.append("AND product_name ILIKE '%" + productName + "%'");
+            query.append(" AND p.name ILIKE ?");
+            params.add("%" + productName + "%");
         }
         if (categoryName != null) {
-            query.append("AND category_name ILIKE '%" + categoryName + "%'");
+            query.append(" AND c.name ILIKE ?");
+            params.add("%" + categoryName + "%");
         }
         if (creationMin != null) {
-            query.append("AND creation_datetime >= '" + creationMin.toString() + "'");
+            query.append(" AND p.creation_datetime >= ?");
+            params.add(Timestamp.from(creationMin));
         }
         if (creationMax != null) {
-            query.append("AND creation_datetime <= '" + creationMax.toString() + "'");
+            query.append(" AND p.creation_datetime <= ?");
+            params.add(Timestamp.from(creationMax));
         }
         PreparedStatement preparedStatement = connection.prepareStatement(query.toString());
+        for (int i = 0; i < params.size(); i++) {
+            preparedStatement.setObject(i + 1, params.get(i));
+        }
         ResultSet resultSet = preparedStatement.executeQuery();
         while (resultSet.next()) {
             Category category = new Category(resultSet.getInt("product_id"), resultSet.getString("product_name"));
@@ -74,5 +82,14 @@ public class DataRetriever {
         resultSet.close();
         preparedStatement.close();
         return products;
+    }
+    List<Product> getProductsByCriteria(String productName, String categoryName, Instant creationMin, Instant creationMax, int page, int size) throws SQLException {
+        List<Product> allProducts = getProductsByCriteria(productName, categoryName, creationMin, creationMax);
+        int fromIndex = (page - 1) * size;
+        if (allProducts.size() < fromIndex) {
+            return new ArrayList<>();
+        }
+        int toIndex = Math.min(fromIndex + size, allProducts.size());
+        return allProducts.subList(fromIndex, toIndex);
     }
 }
