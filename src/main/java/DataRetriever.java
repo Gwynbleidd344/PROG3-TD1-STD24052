@@ -24,13 +24,14 @@ public class DataRetriever {
 
     public List<Product> getProductList (int page, int size) throws SQLException {
         List<Product> products = new ArrayList<>();
+        int offset = (page - 1) * size;
         String query = " SELECT p.id AS product_id, p.name AS product_name, p.creation_datetime, c.id AS category_id, c.name AS category_name FROM Product p LEFT JOIN Product_Category c ON c.product_id = p.id ORDER BY p.id LIMIT ? OFFSET ?";
         PreparedStatement preparedStatement = connection.prepareStatement(query);
         preparedStatement.setInt(1, size);
-        preparedStatement.setInt(2, page);
+        preparedStatement.setInt(2, offset);
         ResultSet resultSet = preparedStatement.executeQuery();
         while (resultSet.next()) {
-            Category category = new Category(resultSet.getInt("product_id"), resultSet.getString("product_name"));
+            Category category = new Category(resultSet.getInt("category_id"), resultSet.getString("category_name"));
             Product product = new Product(
                     resultSet.getInt("product_id"),
                     resultSet.getString("product_name"),
@@ -70,7 +71,7 @@ public class DataRetriever {
         }
         ResultSet resultSet = preparedStatement.executeQuery();
         while (resultSet.next()) {
-            Category category = new Category(resultSet.getInt("product_id"), resultSet.getString("product_name"));
+            Category category = new Category(resultSet.getInt("category_id"), resultSet.getString("category_name"));
             Product product = new Product(
                     resultSet.getInt("product_id"),
                     resultSet.getString("product_name"),
