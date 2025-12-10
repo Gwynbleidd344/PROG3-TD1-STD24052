@@ -1,8 +1,8 @@
 CREATE TABLE Product (
-    id int PRIMARY KEY,
+    id int PRIMARY KEY, --serial
     name varchar(50) NOT NULL,
-    price float CHECK (price > 0) NOT NULL ,
-    creation_datetime timestamp NOT NULL
+    price float CHECK (price > 0) NOT NULL , -- numeric(10,2)
+    creation_datetime timestamp NOT NULL -- default current_timestamp
 );
 CREATE TABLE Product_Category (
     id int PRIMARY KEY,
