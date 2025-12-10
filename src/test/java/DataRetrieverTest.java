@@ -26,7 +26,7 @@ class DataRetrieverTest {
 
         categories = new ArrayList<>();
         categories.add(new Category(1, "Informatique"));
-        categories.add(new Category(2, "T,lephone"));
+        categories.add(new Category(2, "Télephone"));
         categories.add(new Category(3, "Audio"));
         categories.add(new Category(4, "Accessoires"));
         categories.add(new Category(5, "Informatique"));
